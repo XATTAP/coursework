@@ -1,6 +1,6 @@
 import { IsDate, IsDefined, IsEmail} from "class-validator";
 
-export class ItLoginDTO {
+export class IRegisterDTO {
 
     @IsDefined()
     fio: string;
@@ -16,7 +16,7 @@ export class ItLoginDTO {
     password: string;
 }
 
-export class EntrynowDTO {
+export class ILoginDTO {
 
     @IsEmail()
     @IsDefined()

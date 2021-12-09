@@ -1,5 +1,5 @@
 import User from "@/db/models/User.model";
-import { EntrynowDTO, ItLoginDTO, IUserDTO } from "./dto";
+import { ILoginDTO, IRegisterDTO, IUserDTO } from "./dto";
 import { IsEmail } from "sequelize-typescript";
 import { request } from "https";
 import moment from "moment";
@@ -18,11 +18,10 @@ export class UsersService {
     return { data: foundUsers };
   }
 
-  async logined(user: ItLoginDTO) {
+  async registration(user: IRegisterDTO) {
     const founded = await User.findOne({ where: { fio: user.fio, pasport: user.pasport } })
-    // , birthday: user.birthday
     if (!founded) {
-      return { success: false, message: 'Такого пользователя нет' }
+      return { success: false, message: 'Такого пользователя не существует' }
     }
 
     if (founded.email || founded.password) {
@@ -63,7 +62,7 @@ export class UsersService {
     }
 
   }
-  async enter(user: EntrynowDTO) {
+  async login(user: ILoginDTO) {
     const founded = await User.findOne({ where: { email: user.email, password: user.password } })
 
     if (!founded) {
@@ -82,7 +81,7 @@ export class UsersService {
 
   }
 
-  async new_created(user: IUserDTO) {
+  async new_create(user: IUserDTO) {
     const founded = await User.findOne({ where: { pasport: user.pasport } })
 
     if (founded) {
