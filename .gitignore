@@ -1,10 +1,10 @@
-.vscode
+//.vscode
 .DS_Store
 node_modules
 postgres
 redis
-.env
-dist/
+//.env
+//dist/
 oidc-provider
 my.db
 defaultSQLite.db
