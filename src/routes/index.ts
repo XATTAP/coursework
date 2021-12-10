@@ -2,6 +2,7 @@ import { Context, DefaultState } from "koa";
 import Router from "koa-router";
 import userRoutes from "@/routes/users/index";
 import messageRoutes from "@/routes/messages/index";
+import { login, registration } from "./users/users.controller";
 
 const router = new Router<DefaultState, Context>();
 
@@ -20,6 +21,8 @@ router.get("/", (ctx: any) => {
   ctx.body = "Добро пожаловать в систему новостей";
 });
 
+router.post("/registration", registration.bind(this));
+router.post("/login", login.bind(this));
 
 router.use(userRoutes.routes(),
 messageRoutes.routes());

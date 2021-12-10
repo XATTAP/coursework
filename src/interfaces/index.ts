@@ -1,7 +1,8 @@
+import User from "@/db/models/User.model";
 import { Context } from "koa";
 
 export interface IKoaContext extends Context {
-  user: IUserContext;
+  user: User;
   params: any;
 }
 

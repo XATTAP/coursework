@@ -1,6 +1,9 @@
 import User from "@/db/models/User.model";
 import { ILoginDTO, IRegisterDTO, IUserDTO } from "./dto";
+import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import Message_General from "@/db/models/General_Message.model";
+import Token from "@/db/models/Token.model";
+import { sign } from "jsonwebtoken";
 
 export class UsersService {
 
@@ -12,6 +15,16 @@ export class UsersService {
     });
 
     return { data: foundUsers };
+  }
+
+  generateJWT(owner: User): string {
+    if (!owner) {
+      throw new Error()
+    }
+
+    const accessToken = sign(owner.toJSON(), process.env.TOKEN_SECRET || "mySecretForGenerationJWT", { algorithm: "HS256" })
+
+    return accessToken
   }
 
   async registration(user: IRegisterDTO) {
@@ -47,7 +60,9 @@ export class UsersService {
     const result = founded;
 
     result.email = user.email;
-    result.password = user.password;
+
+    const salt = genSaltSync(10);
+    result.password = hashSync(user.password, salt)
 
     await result.save();
 
@@ -59,20 +74,31 @@ export class UsersService {
 
   }
   async login(user: ILoginDTO) {
-    const founded = await User.findOne({ where: { email: user.email, password: user.password } })
+    const foundUser = await User.findOne({ where: { email: user.email} })
 
-    if (!founded) {
-      return { success: false, message: 'Не удаётся войти' }
+    if (!foundUser) {
+      return { success: false, message: 'Email не найден' }
     }
 
-    const result = founded;
+    await Token.destroy({ where: { userId: foundUser.id } });
 
-    await result.save();
+    const correctPass = compareSync(user.password, foundUser.password);
+    if (!correctPass) {
+      return { success: false, message: 'Неверный пароль' }
+    }
+
+    const token = this.generateJWT(foundUser);
+
+    await Token.create({
+      token,
+      userId: foundUser.id,
+    });
 
     return {
       success: true,
-      message: 'Добро пожаловать',
-      data: result
+      message: "Успешная аутентификация",
+      user: foundUser,
+      token
     }
 
   }

@@ -1,4 +1,4 @@
-import { IsDefined, IsEmail} from "class-validator";
+import {Length, IsDefined, IsEmail} from "class-validator";
 
 export class IRegisterDTO {
 
@@ -13,6 +13,7 @@ export class IRegisterDTO {
     email: string;
   
     @IsDefined()
+    @Length(6,20,{})
     password: string;
 }
 
@@ -23,6 +24,7 @@ export class ILoginDTO {
     email: string;
   
     @IsDefined()
+    @Length(6,20,{})
     password: string;
 }
 

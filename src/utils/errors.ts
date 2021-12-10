@@ -33,3 +33,26 @@ export class ServerValidationError extends ApiError {
     this.stack = errors;
   }
 }
+
+export class AuthenticationError extends ApiError {
+  constructor(errorCode?: string, message?: string, errors?: any) {
+    super(...arguments);
+
+    this.name = "AuthenticationError";
+    this.message = message || "Невозможно провести аутентификацию.";
+    this.errorCode = errorCode;
+    this.status = 401;
+    this.stack = errors;
+  }
+}
+
+export class NotFoundError extends ApiError {
+  constructor(errorCode?: string, message?: string) {
+    super(...arguments);
+
+    this.name = "NotFoundError";
+    this.message = message || "Объект не найден.";
+    this.status = 402;
+    this.errorCode = errorCode;
+  }
+}
