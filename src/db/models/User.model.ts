@@ -64,14 +64,12 @@ class User extends Model {
   @Column(DataType.STRING)
   password: string;
 
-  @HasMany(() => Message_General, { foreignKey: "email", onDelete: "RESTRICT" })
+  @Column(DataType.BOOLEAN)
+  isAdmin: boolean;
+
+  @HasMany(() => Message_General, { foreignKey: "userId", onDelete: "RESTRICT" })
   message_for_all: Message_General[];
 
-  @HasMany(() => Message_Personal, { foreignKey: "email_to", onDelete: "RESTRICT" })
-  message_to_me: Message_Personal[];
-
-  @HasMany(() => Message_Personal, { foreignKey: "email_from", onDelete: "RESTRICT" })
-  message_from_me: Message_Personal[];
 }
 
 export default User;

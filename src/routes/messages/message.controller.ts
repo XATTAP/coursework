@@ -2,17 +2,17 @@ import { IKoaContext } from "@/interfaces";
 import { messageFactory } from "@/routes/messages/message.service";
 import { ServerValidationError } from "@/utils/errors";
 import { transformAndValidate } from "class-transformer-validator";
-import { GeneralMessageDTO } from "./dto";
+import { IGeneralMessageDTO } from "./dto";
 
-export const write_messages = async (ctx: IKoaContext) => {
-    const body: GeneralMessageDTO = ctx.request.body;
+export const write_all = async (ctx: IKoaContext) => {
+    const body: IGeneralMessageDTO = ctx.request.body;
     
-    await transformAndValidate(GeneralMessageDTO, body).catch(
+    await transformAndValidate(IGeneralMessageDTO, body).catch(
       (err: ServerValidationError) => {
         throw new ServerValidationError(err.errorCode, err.message)
       }
     )
   
-    const result = await messageFactory().message_for_many(body);
+    const result = await messageFactory().write_all(body);
     ctx.body = result;
   };

@@ -3,9 +3,8 @@ import {
     Column,
     Model,
     DataType,
+    Unique,
     AllowNull,
-    HasMany,
-    ForeignKey,
     BelongsTo,
   } from "sequelize-typescript";
   import User from "./User.model";
@@ -13,18 +12,19 @@ import {
   @Table({
     timestamps: true,
   })
-  class Message_General extends Model {
-    @Column(DataType.STRING)
-    info: string;
+  class Token extends Model {
   
-    @ForeignKey(() => User)
-    @AllowNull(false)
     @Column(DataType.NUMBER)
     userId: number;
   
-    @BelongsTo(() => User, "userId")
-    user: User;
+    @Unique
+    @AllowNull(false)
+    @Column(DataType.STRING)
+    token: string;
+  
+    @BelongsTo(() => User, 'userId')
+    user: User[];
   }
   
-  export default Message_General;
+  export default Token;
   

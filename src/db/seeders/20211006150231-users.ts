@@ -14,6 +14,7 @@ const seedUsers = {
       salary: 500000,
       marital_status: "Жен/ЗМ",
       amount_of_children: 2,
+      isAdmin: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

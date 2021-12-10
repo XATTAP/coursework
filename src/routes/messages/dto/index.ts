@@ -1,6 +1,6 @@
 import {IsDefined, IsEmail} from "class-validator";
 
-export class GeneralMessageDTO {
+export class IGeneralMessageDTO {
 
     @IsDefined()
     info: string;

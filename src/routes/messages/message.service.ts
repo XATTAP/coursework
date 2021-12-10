@@ -4,12 +4,12 @@ import { IsEmail } from "sequelize-typescript";
 import { request } from "https";
 import moment from "moment";
 import { Op } from 'sequelize';
-import { GeneralMessageDTO } from "./dto";
+import { IGeneralMessageDTO } from "./dto";
 
 
 export class MessageService {
 
-    async message_for_many(message: GeneralMessageDTO) {
+    async write_all(message: IGeneralMessageDTO) {
         const founded = await User.findOne({ where: { email: message.email } })
         if (!founded) {
             return {
@@ -22,7 +22,7 @@ export class MessageService {
         const MESSAGE_DELAY = 30;
         let where: any = {};
 
-        where.email = founded.email;
+        where.userId = founded.id;
         where.createdAt = {
             [Op.gte]: moment()
                 .subtract(MESSAGE_DELAY, "seconds")
@@ -40,7 +40,7 @@ export class MessageService {
 
         var result = new Message_General();
         result.info = message.info;
-        result.email = founded.email;
+        result.userId = founded.id;
         await result.save();
 
         return {

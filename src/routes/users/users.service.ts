@@ -1,9 +1,5 @@
 import User from "@/db/models/User.model";
 import { ILoginDTO, IRegisterDTO, IUserDTO } from "./dto";
-import { IsEmail } from "sequelize-typescript";
-import { request } from "https";
-import moment from "moment";
-import { Op } from 'sequelize';
 import Message_General from "@/db/models/General_Message.model";
 
 export class UsersService {
