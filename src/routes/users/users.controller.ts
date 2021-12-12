@@ -47,3 +47,8 @@ export const new_create = async (ctx: IKoaContext) => {
   const result = await usersFactory().new_create(body);
   ctx.body = result;
 };
+
+export const me_inform = async (ctx: IKoaContext) => {
+  const result = await usersFactory().me_inform(ctx.user.id);
+  ctx.body = result;
+}

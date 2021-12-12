@@ -33,29 +33,9 @@ export class UsersService {
       return { success: false, message: 'Такого пользователя не существует' }
     }
 
-    if (founded.email || founded.password) {
+    if (founded.email) {
       return { success: false, message: 'Пользователь уже зарегистрирован' }
     }
-
-    // const USER_LIMIT = 2;
-    // const USER_DELAY = 60;
-    // let where: any = {};
-
-
-    // where.createdAt = { 
-    // [Op.gte] : moment()
-    // .subtract(USER_DELAY, "seconds")
-    // .format("YYYY-MM-DD HH:mm:ss")
-    // };
-
-    // const userCount = await User.count({ where });
-
-    // if (userCount >= USER_LIMIT){
-    // return{
-    // success: false,
-    // message: "За " + USER_DELAY + " секунд зарегистрировано " + userCount + " пользователей. (Лимит " + USER_LIMIT + ")"
-    // };
-    // }
 
     const result = founded;
 
@@ -64,12 +44,20 @@ export class UsersService {
     const salt = genSaltSync(10);
     result.password = hashSync(user.password, salt)
 
+    const token = this.generateJWT(result);
+
+    await Token.create({
+      token,
+      userId: result.id,
+    });
+
     await result.save();
 
     return {
       success: true,
       message: 'Успешная регистрация',
-      data: result
+      data: result,
+      token
     }
 
   }
@@ -127,10 +115,23 @@ export class UsersService {
 
     return {
       success: true,
-      message: 'Человек успешно добавлен',
+      message: 'Сотрудник успешно добавлен',
       data: result
     }
 
+  }
+
+  async me_inform(id: number, scope = "") {
+    const foundUser = await User.scope(scope).findByPk(id);
+
+    if (!foundUser) {
+      return {
+        success: false,
+        message: "пользователь не найден",
+      };
+    }
+
+    return foundUser;
   }
 }
 export const usersFactory = () => new UsersService();
