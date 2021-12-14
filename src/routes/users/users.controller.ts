@@ -52,3 +52,8 @@ export const me_inform = async (ctx: IKoaContext) => {
   const result = await usersFactory().me_inform(ctx.user.id);
   ctx.body = result;
 }
+
+export const logout = async (ctx: IKoaContext) => {
+  const result = await usersFactory().logout(ctx.user.id);
+  ctx.body = result;
+};

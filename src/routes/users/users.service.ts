@@ -91,6 +91,15 @@ export class UsersService {
 
   }
 
+  async logout(userId: number) {
+    await Token.destroy({ where: { userId } });
+
+    return {
+      success: true,
+      message: "успешный выход из системы",
+    };
+  }
+
   async new_create(user: IUserDTO) {
     const founded = await User.findOne({ where: { pasport: user.pasport } })
 
