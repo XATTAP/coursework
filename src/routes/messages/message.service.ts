@@ -9,8 +9,8 @@ import { IGeneralMessageDTO } from "./dto";
 
 export class MessageService {
 
-    async write_all(message: IGeneralMessageDTO) {
-        const founded = await User.findOne({ where: { email: message.email } })
+    async write_all(message: IGeneralMessageDTO, id: number, scope = "" ) {
+        const founded = await User.scope(scope).findByPk(id);
         if (!founded) {
             return {
                 success: false,
@@ -38,7 +38,7 @@ export class MessageService {
             };
         }
 
-        var result = new Message_General();
+        const result = new Message_General();
         result.info = message.info;
         result.userId = founded.id;
         await result.save();

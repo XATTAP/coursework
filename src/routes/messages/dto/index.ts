@@ -1,11 +1,7 @@
-import {IsDefined, IsEmail} from "class-validator";
+import {IsDefined, IsEmail, Length} from "class-validator";
 
 export class IGeneralMessageDTO {
 
-    @IsDefined()
+    @Length(5, 255, {})
     info: string;
-
-    @IsEmail()
-    @IsDefined()
-    email: string;
 }

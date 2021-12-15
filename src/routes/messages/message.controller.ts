@@ -13,6 +13,6 @@ export const write_all = async (ctx: IKoaContext) => {
       }
     )
   
-    const result = await messageFactory().write_all(body);
+    const result = await messageFactory().write_all(body, ctx.user.id);
     ctx.body = result;
   };

@@ -1,5 +1,5 @@
 import User from "@/db/models/User.model";
-import { ILoginDTO, IRegisterDTO, IUserDTO } from "./dto";
+import { ILoginDTO, IRegisterDTO, IUserDTO, IUserUpdateDTO } from "./dto";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import Message_General from "@/db/models/General_Message.model";
 import Token from "@/db/models/Token.model";
@@ -100,6 +100,30 @@ export class UsersService {
     };
   }
 
+  async update_profil(id: number, body: IUserUpdateDTO) {
+    const foundUser = await User.findByPk(id);
+
+    if (!foundUser) {
+      return { success: false, message: "пользователь не найден" };
+    }
+
+    if (body.password) {
+      foundUser.password = hashSync(body.password, genSaltSync(10));
+    }
+
+    if (body.email) {
+      foundUser.email = body.email;
+    }
+
+    await foundUser.save();
+
+    return {
+      success: true,
+      message: "успешное редактирование профиля",
+      user: foundUser,
+    };
+  }
+
   async new_create(user: IUserDTO) {
     const founded = await User.findOne({ where: { pasport: user.pasport } })
 
@@ -141,6 +165,38 @@ export class UsersService {
     }
 
     return foundUser;
+  }
+
+  async delete_person(self: User, userId: number) {
+    if (!self.isAdmin) {
+      return {
+        success: false,
+        message: "недостаточно полномочий",
+      };
+    }
+
+    const foundUser = await User.findByPk(userId);
+    if (!foundUser) {
+      return {
+        success: false,
+        message: "пользователь не найден",
+      };
+    }
+
+    if (foundUser.isAdmin) {
+      return {
+        success: false,
+        message: "удаление администратора запрещено",
+      };
+    }
+
+    await Message_General.destroy({ where: { userId } });
+    await User.destroy({ where: { id: userId } });
+
+    return {
+      success: true,
+      message: "пользователь удален",
+    };
   }
 }
 export const usersFactory = () => new UsersService();
