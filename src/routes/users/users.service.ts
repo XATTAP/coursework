@@ -65,7 +65,7 @@ export class UsersService {
     const foundUser = await User.findOne({ where: { email: user.email} })
 
     if (!foundUser) {
-      return { success: false, message: 'Email не найден' }
+      return { success: false, message: 'Неверный логин' }
     }
 
     await Token.destroy({ where: { userId: foundUser.id } });
@@ -191,11 +191,53 @@ export class UsersService {
     }
 
     await Message_General.destroy({ where: { userId } });
+    await Token.destroy({ where: { userId } });
     await User.destroy({ where: { id: userId } });
 
     return {
       success: true,
       message: "пользователь удален",
+    };
+  }
+
+  async delete_profil(self: User, userId: number) {
+    if (!self.isAdmin) {
+      return {
+        success: false,
+        message: "недостаточно полномочий",
+      };
+    }
+
+    const foundUser = await User.findByPk(userId);
+    if (!foundUser) {
+      return {
+        success: false,
+        message: "пользователь не найден",
+      };
+    }
+
+    if (!foundUser.email) {
+      return {
+        success: false,
+        message: "Этот пользователь не имеет учетной записи",
+      };
+    }
+
+    if (foundUser.isAdmin && (foundUser.id != self.id)) {
+      return {
+        success: false,
+        message: "удаление администратора запрещено",
+      };
+    }
+
+    await Message_General.destroy({ where: { userId } });
+    await Token.destroy({ where: { userId } });
+    foundUser.email = null;
+    foundUser.password = null;
+
+    return {
+      success: true,
+      message: "Профиль пользователя удален",
     };
   }
 }
