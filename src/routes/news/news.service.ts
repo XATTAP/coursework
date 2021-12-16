@@ -6,6 +6,12 @@ import News from "@/db/models/News.model";
 
 export class NewsService {
 
+    async getList() {
+        const foundNews = await News.findAll();
+    
+        return { data: foundNews };
+      }
+
     async create_news(news: INewsDTO, id: number, scope = "" ) {
         const founded = await User.scope(scope).findByPk(id);
         if (!founded.isAdmin) {

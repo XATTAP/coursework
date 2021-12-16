@@ -4,6 +4,11 @@ import { ServerValidationError } from "@/utils/errors";
 import { transformAndValidate } from "class-transformer-validator";
 import { INewsDTO } from "./dto";
 
+export const list = async (ctx: IKoaContext) => {
+  const newsList = await newsFactory().getList();
+  ctx.body = { ...newsList };
+};
+
 export const create_news = async (ctx: IKoaContext) => {
     const body: INewsDTO = ctx.request.body;
     
