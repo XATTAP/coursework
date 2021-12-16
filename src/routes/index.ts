@@ -2,6 +2,7 @@ import { Context, DefaultState } from "koa";
 import Router from "koa-router";
 import userRoutes from "@/routes/users/index";
 import messageRoutes from "@/routes/messages/index";
+import newsRoutes from "@/routes/news/index"
 import { login, registration } from "./users/users.controller";
 
 const router = new Router<DefaultState, Context>();
@@ -25,7 +26,9 @@ router.post("/registration", registration.bind(this));
 router.post("/login", login.bind(this));
 
 router.use(userRoutes.routes(),
-messageRoutes.routes());
+messageRoutes.routes(),
+newsRoutes.routes());
+
 
 if (process.env.CONSOLE_URL === "true") {
   console.log("available routes:");

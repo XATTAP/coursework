@@ -65,7 +65,7 @@ export class UsersService {
     const foundUser = await User.findOne({ where: { email: user.email} })
 
     if (!foundUser) {
-      return { success: false, message: 'Неверный логин' }
+      return { success: false, message: 'Неверно введен логин или пароль' }
     }
 
     await Token.destroy({ where: { userId: foundUser.id } });

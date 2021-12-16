@@ -14,9 +14,11 @@ import {
   })
   class News extends Model {
 
+    @AllowNull(false)
     @Column(DataType.STRING)
     Head: string;
 
+    @AllowNull(false)
     @Column(DataType.STRING)
     info: string;
   
