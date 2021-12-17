@@ -71,4 +71,37 @@ export class IUserDTO {
     amount_of_children: number;
 }
 
-export class ICreateUserDTO extends IUserDTO { }
+export class IUserFullUpdateDTO {
+
+    @IsDefined()
+    fio: string;
+
+    @IsDefined()
+    pasport: string;
+
+    @IsDefined()
+    birthday: string;
+  
+    @IsDefined()
+    male: string;
+
+    @IsDefined()
+    job: string;
+
+    @IsDefined()
+    date_of_receipt: string;
+
+    date_of_dismissal: string;
+
+    @IsDefined()
+    salary: number;
+
+    @IsDefined()
+    marital_status: string;
+
+    @IsDefined()
+    amount_of_children: number;
+
+    @IsDefined()
+    isAdmin: boolean;
+}

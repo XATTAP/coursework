@@ -1,9 +1,10 @@
 import User from "@/db/models/User.model";
-import { ILoginDTO, IRegisterDTO, IUserDTO, IUserUpdateDTO } from "./dto";
+import { ILoginDTO, IRegisterDTO, IUserDTO, IUserFullUpdateDTO, IUserUpdateDTO } from "./dto";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import Message_General from "@/db/models/General_Message.model";
 import Token from "@/db/models/Token.model";
 import { sign } from "jsonwebtoken";
+import { Exclude } from "class-transformer";
 
 export class UsersService {
 
@@ -115,6 +116,64 @@ export class UsersService {
       foundUser.email = body.email;
     }
 
+    await foundUser.save();
+
+    return {
+      success: true,
+      message: "успешное редактирование профиля",
+      user: foundUser,
+    };
+  }
+
+  async full_update_profil(self: User, id: number, body: IUserFullUpdateDTO) {
+
+    if (!self.isAdmin) {
+      return {
+        success: false,
+        message: "недостаточно полномочий",
+      };
+    }
+
+    const foundUser = await User.findByPk(id);
+
+    if (!foundUser) {
+      return { success: false, message: "пользователь не найден" };
+    }
+
+    if (body.fio) {
+      foundUser.fio = body.fio;
+    }
+    if (body.pasport) {
+      foundUser.pasport = body.pasport;
+    }
+    if (body.birthday) {
+      foundUser.birthday = body.birthday;
+    }
+    if (body.male) {
+      foundUser.male = body.male;
+    }
+    if (body.job) {
+      foundUser.job = body.job;
+    }
+    if (body.date_of_receipt) {
+      foundUser.date_of_receipt = body.date_of_receipt;
+    }
+    if (body.date_of_dismissal) {
+      foundUser.date_of_dismissal = body.date_of_dismissal;
+    }
+    if (body.salary) {
+      foundUser.salary = body.salary;
+    }
+    if (body.marital_status) {
+      foundUser.marital_status = body.marital_status;
+    }
+    if (body.amount_of_children) {
+      foundUser.amount_of_children = body.amount_of_children;
+    }
+    if (body.isAdmin) {
+      foundUser.isAdmin = body.isAdmin;
+    }
+   
     await foundUser.save();
 
     return {

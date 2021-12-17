@@ -2,7 +2,7 @@ import { IKoaContext } from "@/interfaces";
 import { usersFactory } from "@/routes/users/users.service";
 import { ServerValidationError } from "@/utils/errors";
 import { transformAndValidate } from "class-transformer-validator";
-import { ILoginDTO, IRegisterDTO, IUserDTO, IUserUpdateDTO } from "./dto";
+import { ILoginDTO, IRegisterDTO, IUserDTO, IUserFullUpdateDTO, IUserUpdateDTO } from "./dto";
 
 export const list = async (ctx: IKoaContext) => {
   const usersList = await usersFactory().getList();
@@ -57,6 +57,12 @@ export const update_profil = async (ctx: IKoaContext) => {
   const result = await usersFactory().update_profil(ctx.user.id, body);
   ctx.body = result;
 };
+
+export const full_update_profil = async (ctx: IKoaContext) => {
+  const body: IUserUpdateDTO = ctx.request.body;
+
+};
+
 export const delete_profil = async (ctx: IKoaContext) => {
   const result = await usersFactory().delete_profil(ctx.user, ctx.params.id);
   ctx.body = result;
