@@ -1,7 +1,7 @@
 import checkAuth from "@/middlewares/checkAuth";
 import { Context, DefaultState } from "koa";
 import Router from "koa-router";
-import {registration, list, login, new_create, me_inform, logout, update_profil, delete_person, delete_profil, full_update_profil} from "@/routes/users/users.controller";
+import {list, new_create, me_inform, logout, update_profil, delete_person, delete_profil, full_update_profil} from "@/routes/users/users.controller";
 import nullcheckAuth from "@/middlewares/nullcheckAuth";
 
 const router = new Router<DefaultState, Context>();
@@ -18,7 +18,7 @@ router.get("/logout", checkAuth, logout);
 
 router.put("/update", checkAuth, update_profil);
 
-router.put("/full_update/:id", checkAuth, full_update_profil);
+router.post("/full_update/:id", checkAuth, full_update_profil);
 
 router.delete("/delete/:id", checkAuth, delete_person);
 

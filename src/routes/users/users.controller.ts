@@ -59,8 +59,16 @@ export const update_profil = async (ctx: IKoaContext) => {
 };
 
 export const full_update_profil = async (ctx: IKoaContext) => {
-  const body: IUserUpdateDTO = ctx.request.body;
+  const body: IUserFullUpdateDTO = ctx.request.body;
 
+  await transformAndValidate(IUserFullUpdateDTO, body).catch(
+    (err: ServerValidationError) => {
+      throw new ServerValidationError(err.errorCode, err.message)
+    }
+  )
+
+  const result = await usersFactory().full_update_profil(ctx.user, ctx.params.id, body);
+  ctx.body = result;
 };
 
 export const delete_profil = async (ctx: IKoaContext) => {

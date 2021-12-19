@@ -28,6 +28,41 @@ export class IUserUpdateDTO {
     password: string;
   }
 
+  export class IUserFullUpdateDTO {
+
+    @IsDefined()
+    fio: string;
+
+    @IsDefined()
+    pasport: string;
+
+    @IsDefined()
+    birthday: string;
+  
+    @IsDefined()
+    male: string;
+
+    @IsDefined()
+    job: string;
+
+    @IsDefined()
+    date_of_receipt: string;
+
+    date_of_dismissal: string;
+
+    @IsDefined()
+    salary: number;
+
+    @IsDefined()
+    marital_status: string;
+
+    @IsDefined()
+    amount_of_children: number;
+
+    @IsDefined()
+    isAdmin: boolean;
+}
+
 export class ILoginDTO {
 
     @IsEmail()
@@ -69,39 +104,4 @@ export class IUserDTO {
 
     @IsDefined()
     amount_of_children: number;
-}
-
-export class IUserFullUpdateDTO {
-
-    @IsDefined()
-    fio: string;
-
-    @IsDefined()
-    pasport: string;
-
-    @IsDefined()
-    birthday: string;
-  
-    @IsDefined()
-    male: string;
-
-    @IsDefined()
-    job: string;
-
-    @IsDefined()
-    date_of_receipt: string;
-
-    date_of_dismissal: string;
-
-    @IsDefined()
-    salary: number;
-
-    @IsDefined()
-    marital_status: string;
-
-    @IsDefined()
-    amount_of_children: number;
-
-    @IsDefined()
-    isAdmin: boolean;
 }
