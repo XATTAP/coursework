@@ -260,7 +260,7 @@ export class UsersService {
   }
 
   async delete_profil(self: User, userId: number) {
-    if (self.id !== userId) {
+    if (self.id != userId) {
 
 
       if (!self.isAdmin) {
