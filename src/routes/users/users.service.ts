@@ -63,7 +63,7 @@ export class UsersService {
 
   }
   async login(user: ILoginDTO) {
-    const foundUser = await User.findOne({ where: { email: user.email} })
+    const foundUser = await User.findOne({ where: { email: user.email } })
 
     if (!foundUser) {
       return { success: false, message: 'Неверно введен логин или пароль' }
@@ -173,7 +173,7 @@ export class UsersService {
     if (body.isAdmin) {
       foundUser.isAdmin = body.isAdmin;
     }
-   
+
     await foundUser.save();
 
     return {
@@ -260,35 +260,40 @@ export class UsersService {
   }
 
   async delete_profil(self: User, userId: number) {
-    if (!self.isAdmin) {
-      return {
-        success: false,
-        message: "недостаточно полномочий",
-      };
-    }
+    if (self.id !== userId) {
 
+
+      if (!self.isAdmin) {
+        return {
+          success: false,
+          message: "недостаточно полномочий",
+        };
+      }
+
+      const foundUser = await User.findByPk(userId);
+
+      if (!foundUser) {
+        return {
+          success: false,
+          message: "пользователь не найден",
+        };
+      }
+
+      if (!foundUser.email) {
+        return {
+          success: false,
+          message: "Этот пользователь не имеет учетной записи",
+        };
+      }
+
+      if (foundUser.isAdmin && (foundUser.id != self.id)) {
+        return {
+          success: false,
+          message: "удаление администратора запрещено",
+        };
+      }
+    }
     const foundUser = await User.findByPk(userId);
-    
-    if (!foundUser) {
-      return {
-        success: false,
-        message: "пользователь не найден",
-      };
-    }
-
-    if (!foundUser.email) {
-      return {
-        success: false,
-        message: "Этот пользователь не имеет учетной записи",
-      };
-    }
-
-    if (foundUser.isAdmin && (foundUser.id != self.id)) {
-      return {
-        success: false,
-        message: "удаление администратора запрещено",
-      };
-    }
 
     await Message_General.destroy({ where: { userId } });
     await Token.destroy({ where: { userId } });
