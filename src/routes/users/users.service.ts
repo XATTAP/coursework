@@ -293,15 +293,13 @@ export class UsersService {
     await Message_General.destroy({ where: { userId } });
     await Token.destroy({ where: { userId } });
     foundUser.email = null;
-    foundUser.password = undefined;
+    foundUser.password = null;
 
     await foundUser.save();
 
     return {
       success: true,
-      message: "Профиль пользователя удален",
-      data: [foundUser.email,
-       foundUser.password]
+      message: "Профиль пользователя удален"
     };
   }
 }
