@@ -9,6 +9,7 @@ import {
   HasMany,
 
 } from "sequelize-typescript";
+import { DateOnlyDataType } from "sequelize/types";
 import Message_General from "./General_Message.model";
 import Message_Personal from "./Personal_Message.model";
 

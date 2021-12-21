@@ -104,4 +104,6 @@ export class IUserDTO {
 
     @IsDefined()
     amount_of_children: number;
+
+    isAdmin: boolean;
 }

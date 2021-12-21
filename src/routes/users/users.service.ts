@@ -5,6 +5,9 @@ import Message_General from "@/db/models/General_Message.model";
 import Token from "@/db/models/Token.model";
 import { sign } from "jsonwebtoken";
 import { Exclude } from "class-transformer";
+import { DATE } from "sequelize/types";
+import moment from "moment";
+import { sequelize } from "@/db/sequelize";
 
 export class UsersService {
 
@@ -16,6 +19,10 @@ export class UsersService {
     });
 
     return { data: foundUsers };
+    // const foundUser = await User.findOne({where: {id:4}});
+    // console.log(foundUser)
+    // const mom = moment(foundUser.date_of_dismissal)
+    // return { data: [foundUser.id, foundUser.fio, foundUser.date_of_dismissal, mom]};
   }
 
   generateJWT(owner: User): string {
@@ -202,6 +209,7 @@ export class UsersService {
     result.salary = user.salary;
     result.marital_status = user.marital_status;
     result.amount_of_children = user.amount_of_children;
+    result.isAdmin = user.isAdmin;
 
     await result.save();
 
@@ -307,5 +315,6 @@ export class UsersService {
       message: "Профиль пользователя удален"
     };
   }
+
 }
 export const usersFactory = () => new UsersService();
