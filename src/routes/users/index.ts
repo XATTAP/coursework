@@ -18,7 +18,7 @@ router.get("/logout", checkAuth, logout);
 
 router.put("/update", checkAuth, update_profil);
 
-router.post("/full_update/:id", checkAuth, full_update_profil);
+router.put("/full_update/:id", checkAuth, full_update_profil);
 
 router.delete("/delete/:id", checkAuth, delete_person);
 

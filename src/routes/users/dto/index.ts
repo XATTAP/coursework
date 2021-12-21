@@ -1,4 +1,5 @@
-import {Length, IsDefined, IsEmail, IsOptional, isEmail} from "class-validator";
+import {Length, IsDefined, IsEmail, IsOptional, isEmail, IsNumber} from "class-validator";
+import { isNumber } from "lodash";
 
 export class IRegisterDTO {
 
@@ -50,12 +51,14 @@ export class IUserUpdateDTO {
 
     date_of_dismissal: string;
 
+    @IsNumber()
     @IsDefined()
     salary: number;
 
     @IsDefined()
     marital_status: string;
 
+    @IsNumber()
     @IsDefined()
     amount_of_children: number;
 
