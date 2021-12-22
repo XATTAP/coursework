@@ -1,11 +1,11 @@
 import User from "@/db/models/User.model";
-import { ILoginDTO, IRegisterDTO, IStatDTO, IUserDTO, IUserFullUpdateDTO, IUserUpdateDTO } from "./dto";
+import { ILoginDTO, IRegisterDTO, IStateDTO, IUserDTO, IUserUpdateDTO } from "./dto";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import Message_General from "@/db/models/General_Message.model";
 import Token from "@/db/models/Token.model";
 import { sign } from "jsonwebtoken";
 import { Op } from "sequelize";
-import moment from "moment";
+import moment, { months } from "moment";
 
 export class UsersService {
 
@@ -126,7 +126,7 @@ export class UsersService {
     };
   }
 
-  async full_update_profil(self: User, id: number, body: IUserFullUpdateDTO) {
+  async full_update_profil(self: User, id: number, body: IUserDTO) {
 
     if (!self.isAdmin) {
       return {
@@ -323,7 +323,21 @@ export class UsersService {
     };
   }
 
-  async getstatistics(body: IStatDTO) {
+  async getstatistics(body: IStateDTO) {
+    let my_time, param; 
+    switch (body.time) {
+      case "год": my_time = 1, param = "year"     
+        break;
+      case "полгода": my_time = 6, param = "months"     
+        break;
+      case "квартал": my_time = 3, param = "months"     
+        break;
+      case "месяц": my_time = 1, param = "month"     
+        break;
+    
+      default: return{success: false, message: "Неверный временной промежуток"}
+    }
+
     let male_count: {
       m: number
       g: number
@@ -344,13 +358,16 @@ export class UsersService {
         more_three: number
       } = { zero: 0, one: 0, two: 0, three: 0, more_three: 0}
 
-    const foundUsers = await User.findAll({
-      where: {
-        date_of_dismissal: {
-          [Op.ne]: null
-        }
-      }
-    });
+      const where: any = {};
+
+
+      where.date_of_dismissal = {
+        [Op.gte]: moment()
+          .subtract(my_time, param)
+          .format("YYYY-MM-DD HH:mm:ss"),
+      };
+
+    const foundUsers = await User.findAll({ where });
 
       for (let index = 0; index < foundUsers.length; index++) {
         switch (foundUsers[index].amount_of_children) {
@@ -395,11 +412,10 @@ export class UsersService {
         }
       }
 
-    return { data: [male_count, salary_count, amount_of_children_count] };
-    // const foundUser = await User.findOne({where: {id:4}});
-    // console.log(foundUser)
-    // const mom = moment(foundUser.date_of_dismissal)
-    // return { data: [foundUser.id, foundUser.fio, foundUser.date_of_dismissal, mom]};
+    return { 
+      success: true,
+      message: `статистика за ${my_time} ${param} составлена`,
+      data: [male_count, salary_count, amount_of_children_count] };
   }
 
 }

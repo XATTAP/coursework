@@ -1,6 +1,6 @@
 import config from "@/config";
 import User from "@/db/models/User.model";
-import { DATEONLY } from "sequelize/types";
+import { DATE, DATEONLY } from "sequelize/types";
 
 const seedUsers = {
   development: [
@@ -58,7 +58,7 @@ const seedUsers = {
       pasport: "31 85 709240",
       job: "инженер",
       date_of_receipt: "16.04.1980",
-      date_of_dismissal: "20.06.1980",
+      date_of_dismissal: new Date(2021,10,14),
       salary: 50000,
       marital_status: "Жен/ЗМ",
       amount_of_children: 3,

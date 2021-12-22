@@ -43,8 +43,8 @@ class User extends Model {
   @Column(DataType.STRING)
   date_of_receipt: string;
 
-  @Column(DataType.STRING)
-  date_of_dismissal: string;
+  @Column(DataType.DATE)
+  date_of_dismissal: Date;
 
   @AllowNull(false)
   @Column(DataType.NUMBER)

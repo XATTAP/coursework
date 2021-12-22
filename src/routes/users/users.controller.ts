@@ -2,7 +2,7 @@ import { IKoaContext } from "@/interfaces";
 import { usersFactory } from "@/routes/users/users.service";
 import { ServerValidationError } from "@/utils/errors";
 import { transformAndValidate } from "class-transformer-validator";
-import { ILoginDTO, IRegisterDTO, IStatDTO, IUserDTO, IUserFullUpdateDTO, IUserUpdateDTO } from "./dto";
+import { ILoginDTO, IRegisterDTO, IStateDTO, IUserDTO, IUserUpdateDTO } from "./dto";
 
 export const list = async (ctx: IKoaContext) => {
   const usersList = await usersFactory().getList();
@@ -64,9 +64,9 @@ export const update_profil = async (ctx: IKoaContext) => {
 };
 
 export const full_update_profil = async (ctx: IKoaContext) => {
-  const body: IUserFullUpdateDTO = ctx.request.body;
+  const body: IUserDTO = ctx.request.body;
 
-  await transformAndValidate(IUserFullUpdateDTO, body).catch(
+  await transformAndValidate(IUserDTO, body).catch(
     (err: ServerValidationError) => {
       throw new ServerValidationError(err.errorCode, err.message)
     }
@@ -100,9 +100,9 @@ export const delete_person = async (ctx: IKoaContext) => {
 };
 
 export const statistics = async (ctx: IKoaContext) => {
-  const body: IStatDTO = ctx.request.body;
+  const body: IStateDTO = ctx.request.body;
 
-  await transformAndValidate(IStatDTO, body).catch(
+  await transformAndValidate(IStateDTO, body).catch(
     (err: ServerValidationError) => {
       throw new ServerValidationError(err.errorCode, err.message)
     }
