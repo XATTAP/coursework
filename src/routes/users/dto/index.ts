@@ -110,3 +110,9 @@ export class IUserDTO {
 
     isAdmin: boolean;
 }
+
+export class IStatDTO {
+
+    @IsDefined()
+    time: string
+}

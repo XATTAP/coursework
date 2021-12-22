@@ -2,7 +2,7 @@ import { IKoaContext } from "@/interfaces";
 import { usersFactory } from "@/routes/users/users.service";
 import { ServerValidationError } from "@/utils/errors";
 import { transformAndValidate } from "class-transformer-validator";
-import { ILoginDTO, IRegisterDTO, IUserDTO, IUserFullUpdateDTO, IUserUpdateDTO } from "./dto";
+import { ILoginDTO, IRegisterDTO, IStatDTO, IUserDTO, IUserFullUpdateDTO, IUserUpdateDTO } from "./dto";
 
 export const list = async (ctx: IKoaContext) => {
   const usersList = await usersFactory().getList();
@@ -39,6 +39,11 @@ export const me_inform = async (ctx: IKoaContext) => {
   const result = await usersFactory().me_inform(ctx.user.id);
   ctx.body = result;
 }
+
+export const inform = async (ctx: IKoaContext) => {
+  const result = await usersFactory().inform(ctx.params.id);
+  ctx.body = result;
+};
 
 export const logout = async (ctx: IKoaContext) => {
   const result = await usersFactory().logout(ctx.user.id);
@@ -92,4 +97,17 @@ export const new_create = async (ctx: IKoaContext) => {
 export const delete_person = async (ctx: IKoaContext) => {
   const result = await usersFactory().delete_person(ctx.user, ctx.params.id);
   ctx.body = result;
+};
+
+export const statistics = async (ctx: IKoaContext) => {
+  const body: IStatDTO = ctx.request.body;
+
+  await transformAndValidate(IStatDTO, body).catch(
+    (err: ServerValidationError) => {
+      throw new ServerValidationError(err.errorCode, err.message)
+    }
+  )
+
+  const statisticsList = await usersFactory().getstatistics(body);
+  ctx.body = { ...statisticsList };
 };

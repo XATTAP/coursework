@@ -1,7 +1,7 @@
 import checkAuth from "@/middlewares/checkAuth";
 import { Context, DefaultState } from "koa";
 import Router from "koa-router";
-import {list, new_create, me_inform, logout, update_profil, delete_person, delete_profil, full_update_profil} from "@/routes/users/users.controller";
+import {list, new_create, me_inform, logout, update_profil, delete_person, delete_profil, full_update_profil, inform, statistics} from "@/routes/users/users.controller";
 import nullcheckAuth from "@/middlewares/nullcheckAuth";
 
 const router = new Router<DefaultState, Context>();
@@ -11,6 +11,10 @@ router.prefix("/users");
 router.get("/", nullcheckAuth, list);
 
 router.get("/me_inform", checkAuth, me_inform);
+
+router.get("/inform/:id", checkAuth, inform);
+
+router.post("/statistics", checkAuth, statistics);
 
 router.post("/create", checkAuth, new_create);
 

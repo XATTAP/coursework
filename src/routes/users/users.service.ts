@@ -1,13 +1,11 @@
 import User from "@/db/models/User.model";
-import { ILoginDTO, IRegisterDTO, IUserDTO, IUserFullUpdateDTO, IUserUpdateDTO } from "./dto";
+import { ILoginDTO, IRegisterDTO, IStatDTO, IUserDTO, IUserFullUpdateDTO, IUserUpdateDTO } from "./dto";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import Message_General from "@/db/models/General_Message.model";
 import Token from "@/db/models/Token.model";
 import { sign } from "jsonwebtoken";
-import { Exclude } from "class-transformer";
-import { DATE } from "sequelize/types";
+import { Op } from "sequelize";
 import moment from "moment";
-import { sequelize } from "@/db/sequelize";
 
 export class UsersService {
 
@@ -19,10 +17,6 @@ export class UsersService {
     });
 
     return { data: foundUsers };
-    // const foundUser = await User.findOne({where: {id:4}});
-    // console.log(foundUser)
-    // const mom = moment(foundUser.date_of_dismissal)
-    // return { data: [foundUser.id, foundUser.fio, foundUser.date_of_dismissal, mom]};
   }
 
   generateJWT(owner: User): string {
@@ -234,6 +228,19 @@ export class UsersService {
     return foundUser;
   }
 
+  async inform(id: number, scope = "") {
+    const foundUser = await User.scope(scope).findByPk(id);
+
+    if (!foundUser) {
+      return {
+        success: false,
+        message: "пользователь не найден",
+      };
+    }
+
+    return foundUser;
+  }
+
   async delete_person(self: User, userId: number) {
     if (!self.isAdmin) {
       return {
@@ -314,6 +321,85 @@ export class UsersService {
       success: true,
       message: "Профиль пользователя удален"
     };
+  }
+
+  async getstatistics(body: IStatDTO) {
+    let male_count: {
+      m: number
+      g: number
+    }={m:0, g:0},
+      salary_count: {
+        less_20: number
+        c20_40: number
+        c40_60: number
+        c60_80: number
+        c80_100: number
+        more_100: number
+      } = { less_20: 0, c20_40: 0, c40_60: 0, c60_80: 0, c80_100: 0, more_100: 0},
+      amount_of_children_count:{
+        zero: number
+        one: number
+        two: number
+        three: number
+        more_three: number
+      } = { zero: 0, one: 0, two: 0, three: 0, more_three: 0}
+
+    const foundUsers = await User.findAll({
+      where: {
+        date_of_dismissal: {
+          [Op.ne]: null
+        }
+      }
+    });
+
+      for (let index = 0; index < foundUsers.length; index++) {
+        switch (foundUsers[index].amount_of_children) {
+          case 0: amount_of_children_count.zero++
+            break;
+          case 1: amount_of_children_count.one++
+            break;
+          case 2: amount_of_children_count.two++
+            break;
+          case 3: amount_of_children_count.three++
+            break;
+          default: amount_of_children_count.more_three++
+            break;
+        }
+      }
+      for (let index = 0; index < foundUsers.length; index++) {
+        if (foundUsers[index].salary < 20000) {
+          salary_count.less_20++
+        }
+        if ((foundUsers[index].salary >= 20000) && (foundUsers[index].salary < 40000)) {
+          salary_count.c20_40++
+        }
+        if ((foundUsers[index].salary >= 40000) && (foundUsers[index].salary < 60000)) {
+          salary_count.c40_60++
+        }
+        if ((foundUsers[index].salary >= 60000) && (foundUsers[index].salary < 80000)) {
+          salary_count.c60_80++
+        }
+        if ((foundUsers[index].salary >= 80000) && (foundUsers[index].salary < 100000)) {
+          salary_count.c80_100++
+        }
+        if (foundUsers[index].salary > 100000) {
+          salary_count.more_100++
+        }
+      }
+      for (let index = 0; index < foundUsers.length; index++) {
+        switch (foundUsers[index].male) {
+          case "мужской": male_count.m++           
+            break;
+          case "женский": male_count.g++           
+            break;
+        }
+      }
+
+    return { data: [male_count, salary_count, amount_of_children_count] };
+    // const foundUser = await User.findOne({where: {id:4}});
+    // console.log(foundUser)
+    // const mom = moment(foundUser.date_of_dismissal)
+    // return { data: [foundUser.id, foundUser.fio, foundUser.date_of_dismissal, mom]};
   }
 
 }
