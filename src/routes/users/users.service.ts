@@ -324,98 +324,128 @@ export class UsersService {
   }
 
   async getstatistics(body: IStateDTO) {
-    let my_time, param; 
+    let my_time, param;
     switch (body.time) {
-      case "год": my_time = 1, param = "year"     
+      case "за все время": my_time = 999, param = "years"
         break;
-      case "полгода": my_time = 6, param = "months"     
+      case "год": my_time = 1, param = "year"
         break;
-      case "квартал": my_time = 3, param = "months"     
+      case "полгода": my_time = 6, param = "months"
         break;
-      case "месяц": my_time = 1, param = "month"     
+      case "квартал": my_time = 3, param = "months"
         break;
-    
-      default: return{success: false, message: "Неверный временной промежуток"}
+      case "месяц": my_time = 1, param = "month"
+        break;
+
+      default: return { success: false, message: "Неверный временной промежуток" }
     }
 
     let male_count: {
       m: number
       g: number
-    }={m:0, g:0},
+    } = { m: 0, g: 0 },
+    marital_status_count: {
+      razv: number,
+      vdov: number,
+      genzm: number,
+      holnz: number
+    } = {razv:0, vdov: 0, genzm: 0, holnz: 0},
       salary_count: {
         less_20: number
         c20_40: number
         c40_60: number
         c60_80: number
         c80_100: number
-        more_100: number
-      } = { less_20: 0, c20_40: 0, c40_60: 0, c60_80: 0, c80_100: 0, more_100: 0},
-      amount_of_children_count:{
+        c100_120: number
+        c120_150: number
+        more_150: number
+      } = { less_20: 0, c20_40: 0, c40_60: 0, c60_80: 0, c80_100: 0, c100_120: 0, c120_150: 0, more_150: 0 },
+      amount_of_children_count: {
         zero: number
         one: number
         two: number
         three: number
         more_three: number
-      } = { zero: 0, one: 0, two: 0, three: 0, more_three: 0}
+      } = { zero: 0, one: 0, two: 0, three: 0, more_three: 0 }
 
-      const where: any = {};
+    const where: any = {};
 
 
-      where.date_of_dismissal = {
-        [Op.gte]: moment()
-          .subtract(my_time, param)
-          .format("YYYY-MM-DD HH:mm:ss"),
-      };
+    where.date_of_dismissal = {
+      [Op.gte]: moment()
+        .subtract(my_time, param)
+        .format("YYYY-MM-DD HH:mm:ss"),
+    };
 
     const foundUsers = await User.findAll({ where });
 
-      for (let index = 0; index < foundUsers.length; index++) {
-        switch (foundUsers[index].amount_of_children) {
-          case 0: amount_of_children_count.zero++
-            break;
-          case 1: amount_of_children_count.one++
-            break;
-          case 2: amount_of_children_count.two++
-            break;
-          case 3: amount_of_children_count.three++
-            break;
-          default: amount_of_children_count.more_three++
-            break;
-        }
+    for (let index = 0; index < foundUsers.length; index++) {
+      switch (foundUsers[index].amount_of_children) {
+        case 0: amount_of_children_count.zero++
+          break;
+        case 1: amount_of_children_count.one++
+          break;
+        case 2: amount_of_children_count.two++
+          break;
+        case 3: amount_of_children_count.three++
+          break;
+        default: amount_of_children_count.more_three++
+          break;
       }
-      for (let index = 0; index < foundUsers.length; index++) {
-        if (foundUsers[index].salary < 20000) {
-          salary_count.less_20++
-        }
-        if ((foundUsers[index].salary >= 20000) && (foundUsers[index].salary < 40000)) {
-          salary_count.c20_40++
-        }
-        if ((foundUsers[index].salary >= 40000) && (foundUsers[index].salary < 60000)) {
-          salary_count.c40_60++
-        }
-        if ((foundUsers[index].salary >= 60000) && (foundUsers[index].salary < 80000)) {
-          salary_count.c60_80++
-        }
-        if ((foundUsers[index].salary >= 80000) && (foundUsers[index].salary < 100000)) {
-          salary_count.c80_100++
-        }
-        if (foundUsers[index].salary > 100000) {
-          salary_count.more_100++
-        }
+    }
+    for (let index = 0; index < foundUsers.length; index++) {
+      switch (foundUsers[index].marital_status) {
+        case "Разв.": marital_status_count.razv++
+          break;
+        case "Вдов.": marital_status_count.vdov++
+          break;
+        case "Жен/ЗМ": marital_status_count.genzm++
+          break;
+        case "Хол/НЗ": marital_status_count.holnz++
+          break;
       }
-      for (let index = 0; index < foundUsers.length; index++) {
-        switch (foundUsers[index].male) {
-          case "мужской": male_count.m++           
-            break;
-          case "женский": male_count.g++           
-            break;
-        }
-      }
+    }
+    for (let index = 0; index < foundUsers.length; index++) {
 
-    return { 
+      if (foundUsers[index].salary < 20000) {
+        salary_count.less_20++
+      }
+      if ((foundUsers[index].salary >= 20000) && (foundUsers[index].salary < 40000)) {
+        salary_count.c20_40++
+      }
+      if ((foundUsers[index].salary >= 40000) && (foundUsers[index].salary < 60000)) {
+        salary_count.c40_60++
+      }
+      if ((foundUsers[index].salary >= 60000) && (foundUsers[index].salary < 80000)) {
+        salary_count.c60_80++
+      }
+      if ((foundUsers[index].salary >= 80000) && (foundUsers[index].salary < 100000)) {
+        salary_count.c80_100++
+      }
+      if ((foundUsers[index].salary >= 100000) && (foundUsers[index].salary < 120000)) {
+        salary_count.c100_120++
+      }
+      if ((foundUsers[index].salary >= 120000) && (foundUsers[index].salary < 150000)) {
+        salary_count.c120_150++
+      }
+      if (foundUsers[index].salary > 150000) {
+        salary_count.more_150++
+      }
+    }
+    for (let index = 0; index < foundUsers.length; index++) {
+      switch (foundUsers[index].male) {
+        case "мужской": male_count.m++
+          break;
+        case "женский": male_count.g++
+          break;
+      }
+    }
+
+    return {
       success: true,
       message: `статистика за ${my_time} ${param} составлена`,
-      data: [male_count, salary_count, amount_of_children_count] };
+      data: [male_count,marital_status_count, salary_count, amount_of_children_count]
+    };
   }
 
 }
